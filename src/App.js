@@ -5,6 +5,7 @@ function App() {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [model, setModel] = useState('ask-openai');
+  const [database, setDatabase] = useState('faiss');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +34,10 @@ function App() {
           <option value="ask-langchain">LangChain</option>
           <option value="ask-gpt2">GPT2</option>
           <option value="ask-hf-api">Mistral (HF API)</option>
+        </select>
+        <select value={database} onChange={(e) => setDatabase(e.target.value)}>
+          <option value="faiss">FAISS</option>
+          <option value="pinecone">Pinecone</option>
         </select>
         <button type="submit">Wyślij</button>
       </form>
