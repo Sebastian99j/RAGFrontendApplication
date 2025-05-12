@@ -24,9 +24,11 @@ function ChatTab() {
   const [database, setDatabase] = useState('faiss');
   const [history, setHistory] = useState([]);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch(`http://localhost:8000/${model}`, {
+    const response = await fetch(`${API_URL}/${model}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question, top_k: 2, database })
@@ -86,10 +88,12 @@ function TrainTab() {
 
   const addExample = () => setExamples([...examples, { input: '', output: '' }]);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
   const handleTrain = async (e) => {
     e.preventDefault();
     setStatus('Trenowanie...');
-    const response = await fetch('http://localhost:8000/fine-tune-gpt2', {
+    const response = await fetch(`${API_URL}/fine-tune-gpt2`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ training_data: examples, epochs })
