@@ -31,13 +31,38 @@ function ChatTab() {
     const response = await fetch(`${API_URL}/${model}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, top_k: 2, database })
+      body: JSON.stringify({
+        session_id: sessionId,
+        question,
+        top_k: 2,
+        database
+      })
     });
+
     const data = await response.json();
     setAnswer(data.answer);
     setHistory([...history, { user: question, bot: data.answer }]);
     setQuestion('');
   };
+
+  const resetSession = async () => {
+    await fetch(`${API_URL}/reset-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId })
+    });
+    setHistory([]);
+  };
+
+  const [sessionId] = useState(() => {
+    return localStorage.getItem('session_id') || generateSessionId();
+  });
+
+  function generateSessionId() {
+    const id = 'sess-' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('session_id', id);
+    return id;
+  }
 
   return (
     <>
@@ -69,6 +94,7 @@ function ChatTab() {
             <option value="pinecone">Pinecone</option>
           </select>
           <button type="submit">Wyślij</button>
+          <button onClick={resetSession}>🗑 Resetuj rozmowę</button>
         </div>
       </form>
     </>
